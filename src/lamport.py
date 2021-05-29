@@ -16,6 +16,7 @@ from os import urandom
 class LamportSignature:
     """Lamport signature class.
 
+
     Attributes:
         private_key (list): Private key.
         public_key (list): Public key.
