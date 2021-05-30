@@ -65,62 +65,23 @@ class LamportSignature:
         """
         return [(self.hash(a), self.hash(b)) for (a, b) in self.private_key]
 
-    @staticmethod
-    def concatenate_key(key_list):
-        """Concatenate key.
 
-        Args:
-            key_list (list): Key to concatenate.
-
-        Returns:
-            (bytearray): Concatenated key.
-
-        """
-        ret = bytearray(0)
-        if type(key_list[0]) is tuple:
-            for a, b in key_list:
-                ret += a + b
-        else:
-            for i in key_list:
-                ret += i
-        return ret
-
-    @staticmethod
-    def decatenate_key(key):
-        """Decatenate key.
-
-        Args:
-            key (bytearray): Key to decatenate.
-
-        Returns:
-            (list): Decatenated key.
-
-        """
-        if len(key) == 8192:  # signature key size 256×256 bits
-            return [key[i:i + 32] for i in range(0, 8192, 32)]
-        elif len(key) == 16384:  # public/private key size 2x256×256 bits
-            ret = []
-            for i in range(0, 16384, 64):
-                ret.append((key[i:i + 32], key[i + 32:i + 64]))
-            return ret
-        else:
-            raise ValueError("Wrong key size.")
-
-    def get_key(self, key_type, concatenate):
+    def get_key(self, key_type):
         """Getter for the public or private key.
 
         Args:
             key_type (str): 'public' or 'private'.
-            concatenate (boolean): Concatenate key or not.
 
         Returns:
             (bytearray/list): Public key.
 
         """
-        key = self.public_key if key_type == 'public' else self.private_key
-        if not concatenate:
-            return key
-        return self.concatenate_key(key)
+        if key_type == 'public':
+            key = self.public_key
+        else:
+            key = self.private_key
+        return key
+
 
     def sign(self, msg):
         """Sign a message with the Lamport signature.
