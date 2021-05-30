@@ -10,8 +10,10 @@
 from bitstring import BitArray
 # make dealing with binary data in Python as easy as possible
 import hashlib
+# to generate hash function of any data
 from os import urandom
-
+# os.urandom() method is used to generate a string of size random bytes
+# suitable for cryptographic use
 
 class LamportSignature:
     """Lamport signature class.
@@ -33,9 +35,17 @@ class LamportSignature:
     @staticmethod
     def generate_private_key():
         """Generate a private key.
+            Also called Secret Key
 
         Returns:
             (list): Private key, 2×256×256 bits = 16 KiB.
+
+            How ?? See below :
+            32 bytes = 256 bits
+            bytearrray returns a byte array object - it is an array of bytes
+
+            We have 2 rows of 256 blocks
+            Each block has a random byte array of 32 bytes or 256 bits
         """
         return [(bytearray(urandom(32)), bytearray(urandom(32))) for i in range(256)]
 
@@ -45,6 +55,13 @@ class LamportSignature:
         Returns:
             (list): Public key, 2×256×256 bits = 16 KiB.
 
+            The structure is same as the primary key / Secret Key
+            Except that it stores hashes of all the random bytes
+
+            This key is known to other people, can be shared
+
+            hash function has been defined below
+            It uses the hashlib library
         """
         return [(self.hash(a), self.hash(b)) for (a, b) in self.private_key]
 
